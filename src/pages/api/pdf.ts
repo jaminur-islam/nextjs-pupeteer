@@ -1,24 +1,16 @@
-import chrome from 'chrome-aws-lambda';
+import edgeChromium from 'chrome-aws-lambda';
 import puppeteer from 'puppeteer-core';
 import path from "path"
 export default async function handler(req, res) {
-  console.log(path.join(__dirname, "../../../../public/pdf", "test.pdf"))
-    const options = process.env.AWS_REGION
-      ? {
-          args: chrome.args,
-          executablePath: await chrome.executablePath,
-          headless: chrome.headless
-        }
-      : {
-          args: [],
-          executablePath:
-            process.platform === 'win32'
-              ? 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-              : process.platform === 'linux'
-              ? '/usr/bin/google-chrome'
-              : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-        };
-    const browser = await puppeteer.launch(options);
+  const LOCAL_CHROME_EXECUTABLE = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
+  
+  const browser = await puppeteer.launch({
+    executablePath,
+    args: edgeChromium.args,
+    headless: true,
+  })
+    // const browser = await puppeteer.launch(options);
     const page = await browser.newPage();
     await page.setContent(`<div> sagor sago ssagor sagor </div>`);
     await page.setViewport({
