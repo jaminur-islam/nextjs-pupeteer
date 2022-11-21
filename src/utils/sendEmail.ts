@@ -1,5 +1,4 @@
 import sendEmail from "@sendgrid/mail";
-import fs  from "fs"
 
 async function onSendEmail(pdfFile, email) {
   let attachment = pdfFile
