@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       path: path.join(__dirname, "../../../../public/pdf", "tests.pdf"),
       printBackground: true,
       margin: {
-        top: "40px",
+        top: "340px",
         right: "30px",
         bottom: "0px",
         left: "30px",
