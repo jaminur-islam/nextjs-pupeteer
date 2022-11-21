@@ -5,7 +5,6 @@ import edgeChromium from 'chrome-aws-lambda'
 // it won't function correctly with "launch()"
 import puppeteer from 'puppeteer-core'
 import path from "path"
-import fs from "fs"
 // You may want to change this if you're developing
 // on a platform different from macOS.
 // See https://github.com/vercel/og-image for a more resilient
@@ -13,15 +12,9 @@ import fs from "fs"
 const LOCAL_CHROME_EXECUTABLE = '/usr/bin/google-chrome-stable'
 
 export default async function (req, res) {
+  /* const data = require("public/pdf/tsest.json")
+  res.send(data) */
 
-  const dir = path.join(__dirname, `../../../../public/pdf`);
-  if(!fs.existsSync(dir)) {
-	fs.mkdirSync(dir, {
-		recursive: true
-	});
-  } 
-  const pdfPath = path.join(__dirname , `../../../../public/pdf/employee-schedule-.pdf`);
- 
  try{
    // Edge executable will return an empty string locally.
    const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
@@ -39,8 +32,7 @@ export default async function (req, res) {
        deviceScaleFactor: 1,
      });
      await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
-     await page.pdf({
-       path: pdfPath,
+     const pdf = await page.pdf({
        format: "A4",
        printBackground: true,
        margin: {
@@ -51,11 +43,12 @@ export default async function (req, res) {
        },
      });
      await browser.close();
-  res.send('hello')
+     res.setHeader('Content-Type', 'application/pdf')
+    res.send(pdf)
 
  }catch(err){
   console.log(err)
-  res.status(500).json({message: err})
+  res.status(500).json({message: "error"})
  }
   
 }
