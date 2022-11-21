@@ -9,7 +9,6 @@ const LOCAL_CHROME_EXECUTABLE = '/usr/bin/google-chrome-stable'
  try{
    // Edge executable will return an empty string locally.
    const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
-  
    const browser = await puppeteer.launch({
      executablePath,
      args: edgeChromium.args,
@@ -18,12 +17,14 @@ const LOCAL_CHROME_EXECUTABLE = '/usr/bin/google-chrome-stable'
    const page = await browser.newPage();
    await page.setContent(`<div> sagor </div>`);
      await page.setViewport({
+
        width: 595,
        height: 842,
        deviceScaleFactor: 1,
      });
      await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
-     const pdf = await page.pdf({
+     const generatePdf = await page.pdf({
+      path: "",
        format: "A4",
        printBackground: true,
        margin: {
@@ -35,7 +36,7 @@ const LOCAL_CHROME_EXECUTABLE = '/usr/bin/google-chrome-stable'
      });
    
      await browser.close();
-     return pdf
+     return generatePdf
 
  }catch(err){
   console.log(err)
