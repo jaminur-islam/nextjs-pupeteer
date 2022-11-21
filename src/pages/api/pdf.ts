@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const browser = await puppeteer.launch({
     executablePath,
     args: edgeChromium.args,
-    headless: true,
+    headless: false,
   })
     // const browser = await puppeteer.launch(options);
     const page = await browser.newPage();
