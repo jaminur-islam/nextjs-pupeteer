@@ -12,34 +12,40 @@ import path from "path"
 const LOCAL_CHROME_EXECUTABLE = '/usr/bin/google-chrome-stable'
 
 export default async function (req, res) {
-  // Edge executable will return an empty string locally.
-  const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
+ try{
+   // Edge executable will return an empty string locally.
+   const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
   
-  const browser = await puppeteer.launch({
-    executablePath,
-    args: edgeChromium.args,
-    headless: false,
-  })
-  const page = await browser.newPage();
-  await page.setContent(`<div> sagor </div>`);
-    await page.setViewport({
-      width: 595,
-      height: 842,
-      deviceScaleFactor: 1,
-    });
-    await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
-    await page.pdf({
-      path: path.join(__dirname, "../../../../public/pdf", "test2.pdf"),
-      format: "A4",
-      printBackground: true,
-      margin: {
-        top: "40px",
-        right: "30px",
-        bottom: "0px",
-        left: "30px",
-      },
-    });
-    await browser.close();
-  
+   const browser = await puppeteer.launch({
+     executablePath,
+     args: edgeChromium.args,
+     headless: false,
+   })
+   const page = await browser.newPage();
+   await page.setContent(`<div> sagor </div>`);
+     await page.setViewport({
+       width: 595,
+       height: 842,
+       deviceScaleFactor: 1,
+     });
+     await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
+     await page.pdf({
+       path: path.join(__dirname, "../../../../public/pdf", "test2.pdf"),
+       format: "A4",
+       printBackground: true,
+       margin: {
+         top: "40px",
+         right: "30px",
+         bottom: "0px",
+         left: "30px",
+       },
+     });
+     await browser.close();
   res.send('hello')
+
+ }catch(err){
+  console.log(err)
+  res.status(500).json({message: "error"})
+ }
+  
 }
