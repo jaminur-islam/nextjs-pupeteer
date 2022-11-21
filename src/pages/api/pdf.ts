@@ -1,15 +1,28 @@
-import puppeteer from 'puppeteer-core'
-import chromium from 'chrome-aws-lambda'
-const LOCAL_CHROME_EXECUTABLE = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+// api/run.js
+import edgeChromium from 'chrome-aws-lambda'
 
-export default async function handler(req, res) {
-  const browser = await chromium.puppeteer.launch({
-    args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: true,
-    ignoreHTTPSErrors: true,
+// Importing Puppeteer core as default otherwise
+// it won't function correctly with "launch()"
+import puppeteer from 'puppeteer-core'
+
+// You may want to change this if you're developing
+// on a platform different from macOS.
+// See https://github.com/vercel/og-image for a more resilient
+// system-agnostic options for Puppeteeer.
+const LOCAL_CHROME_EXECUTABLE = '/usr/bin/google-chrome-stable'
+
+export default async function (req, res) {
+  // Edge executable will return an empty string locally.
+  const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
+  
+  const browser = await puppeteer.launch({
+    executablePath,
+    args: edgeChromium.args,
+    headless: false,
   })
   
-  res.status(200).json({ name: 'John Doe' })
+  const page = await browser.newPage()
+  await page.goto('https://github.com')
+  
+  res.send('hello')
 }
