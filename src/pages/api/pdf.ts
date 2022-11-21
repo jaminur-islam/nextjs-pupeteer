@@ -5,6 +5,7 @@ import edgeChromium from 'chrome-aws-lambda'
 // it won't function correctly with "launch()"
 import puppeteer from 'puppeteer-core'
 import path from "path"
+import fs from "fs"
 // You may want to change this if you're developing
 // on a platform different from macOS.
 // See https://github.com/vercel/og-image for a more resilient
@@ -12,6 +13,14 @@ import path from "path"
 const LOCAL_CHROME_EXECUTABLE = '/usr/bin/google-chrome-stable'
 
 export default async function (req, res) {
+
+  const dir = path.join(__dirname, `../../../../public/pdf`);
+  if(!fs.existsSync(dir)) {
+	fs.mkdirSync(dir, {
+		recursive: true
+	});
+  } 
+  const pdfPath = path.join(__dirname , `../../../../public/pdf/employee-schedule-.pdf`);
  
  try{
    // Edge executable will return an empty string locally.
@@ -31,7 +40,7 @@ export default async function (req, res) {
      });
      await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
      await page.pdf({
-       path: "./public/test.pdf",
+       path: pdfPath,
        format: "A4",
        printBackground: true,
        margin: {
