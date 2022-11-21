@@ -7,7 +7,7 @@ async function onSendEmail(pdfFile, email) {
   // console.log(pdfFile.toString())
 
   return new Promise((resolve, reject) => {
-    sendEmail.setApiKey("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");
+    sendEmail.setApiKey("");
     const msg = {
       from: "alifahmed.47@gmail.com",
       to: email,
