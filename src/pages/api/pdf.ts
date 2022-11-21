@@ -1,18 +1,43 @@
-import puppeteer from 'puppeteer-core'
-import chromium from 'chrome-aws-lambda'
-const LOCAL_CHROME_EXECUTABLE = '/usr/bin/chromium-browser'
-
+import chrome from 'chrome-aws-lambda';
+import puppeteer from 'puppeteer-core';
+import path from "path"
 export default async function handler(req, res) {
-  // const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-  })
-
-  const page = await browser.newPage()
-  await page.goto('https://github.com')
-  
+  console.log(path.join(__dirname, "../../../../public/pdf", "test.pdf"))
+    const options = process.env.AWS_REGION
+      ? {
+          args: chrome.args,
+          executablePath: await chrome.executablePath,
+          headless: chrome.headless
+        }
+      : {
+          args: [],
+          executablePath:
+            process.platform === 'win32'
+              ? 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
+              : process.platform === 'linux'
+              ? '/usr/bin/google-chrome'
+              : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+        };
+    const browser = await puppeteer.launch(options);
+    const page = await browser.newPage();
+    await page.setContent(`<div> sagor sago ssagor sagor </div>`);
+    await page.setViewport({
+      width: 595,
+      height: 842,
+      deviceScaleFactor: 1,
+    });
+    await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
+    await page.pdf({
+      path: path.join(__dirname, "../../../../public/pdf", "tests.pdf"),
+      printBackground: true,
+      margin: {
+        top: "40px",
+        right: "30px",
+        bottom: "0px",
+        left: "30px",
+      },
+    });
+    await browser.close();    
   res.status(200).json({ name: 'John Doe' })
+ 
 }
