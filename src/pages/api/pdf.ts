@@ -31,7 +31,7 @@ export default async function (req, res) {
      });
      await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
      await page.pdf({
-       path: "pdf/test3.pdf",
+       path: "test.pdf",
        format: "A4",
        printBackground: true,
        margin: {
