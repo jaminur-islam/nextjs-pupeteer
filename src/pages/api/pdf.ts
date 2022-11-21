@@ -12,9 +12,7 @@ import path from "path"
 const LOCAL_CHROME_EXECUTABLE = '/usr/bin/google-chrome-stable'
 
 export default async function (req, res) {
-  const data = require("public/pdf/test.json")
-  res.send(data)
- return
+ 
  try{
    // Edge executable will return an empty string locally.
    const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
@@ -33,7 +31,7 @@ export default async function (req, res) {
      });
      await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
      await page.pdf({
-       path: "../../../../public/pdf/test2.pdf",
+       path: "public/pdf/test3.pdf",
        format: "A4",
        printBackground: true,
        margin: {
