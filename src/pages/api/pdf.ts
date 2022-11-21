@@ -4,7 +4,7 @@ import edgeChromium from 'chrome-aws-lambda'
 // Importing Puppeteer core as default otherwise
 // it won't function correctly with "launch()"
 import puppeteer from 'puppeteer-core'
-
+import path from "path"
 // You may want to change this if you're developing
 // on a platform different from macOS.
 // See https://github.com/vercel/og-image for a more resilient
@@ -20,9 +20,26 @@ export default async function (req, res) {
     args: edgeChromium.args,
     headless: false,
   })
-  
-  const page = await browser.newPage()
-  await page.goto('https://github.com')
+  const page = await browser.newPage();
+  await page.setContent(`<div> sagor </div>`);
+    await page.setViewport({
+      width: 595,
+      height: 842,
+      deviceScaleFactor: 1,
+    });
+    await page.addStyleTag({ content: "@page { size: A4 landscape; }" });
+    await page.pdf({
+      path: path.join(__dirname, "../../../../public/pdf", "test2.pdf"),
+      format: "A4",
+      printBackground: true,
+      margin: {
+        top: "40px",
+        right: "30px",
+        bottom: "0px",
+        left: "30px",
+      },
+    });
+    await browser.close();
   
   res.send('hello')
 }
